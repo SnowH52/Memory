@@ -1,0 +1,58 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Drawing;
+
+namespace Memory2_2
+{
+    class Card : PictureBox
+    {
+        public Image front;
+        public Image back;
+        public int imgNbr;
+        public int posX;
+        public int posY;
+        private Game game;
+        public bool canBeFliped;
+
+        public Card(Game game, Image imgFront, int imgNbr, int posX, int posY)
+        {
+            canBeFliped = true;
+            this.game = game;
+            this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            back = Properties.Resources.BackMemory;
+            this.front = imgFront;
+            //this.Visible = true;
+            this.imgNbr = imgNbr;
+            this.posX = posX;
+            this.posY = posY;
+            this.Image = front;
+            this.Location = new System.Drawing.Point(3, 3);
+            this.Size = new System.Drawing.Size(150, 150);
+            this.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Click += new System.EventHandler(this.pictureBox_Click);
+            this.game = game;
+        }
+        public Card()
+        { }
+
+        private void pictureBox_Click(object sender, EventArgs e)
+        {
+            //flip();
+            if (game.canFlip && this.canBeFliped)
+            {
+                this.Image = front;
+                game.checkFlipedCard(this);
+            }
+
+        }
+        public void flipBack()
+        {
+            this.Image = back;
+            
+        }
+    }
+}
