@@ -1,0 +1,289 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Memory2_2
+{
+    public partial class PrimaryMemory : Form
+    {
+        private Image[] tabImage;          //tableau contenant toutes les images disspo
+        private Random random;             //objet random permettant de générer tout les chiffres random du jeu
+        public int positionRanX;           //position random de l'image dans le tableau 2D (entre 0 et 3)
+        public int positionRanY;           //position random de l'image dans le tableau 2D (entre 0 et 3)
+        private Card card;                 //Carte que nous positionnerons dans le tableau
+        private Card card2;                //Carte que nous positionnerons dans le tableau (correspond au double de la première)
+        private Game game;
+        private MessageBoxButtons msgBox;
+        private DialogResult result;
+        Prompt prompt;
+        public bool isMutliplePlayer;
+
+        public PrimaryMemory()
+        {
+            InitializeComponent();        //méthode par défaut
+            prompt = new Prompt(this);
+        }
+
+        public void initConstructor()
+        {
+            isMutliplePlayer = false;
+            game = new Game(this);
+            
+            this.tMemory.Controls.Clear();
+            if (prompt.askHowManyPlayer.Checked)
+            {
+                prompt.chooseHowManyPlayer("A combien de joueurs voulez-vous jouer?", "1 joueur", "2 joueurs");
+            }
+            else
+            {
+
+            }
+            
+            initTabMemory();                  //initialisation du tableau 2D, propriétés etc
+            random = new Random();             //création de l'objet random
+            tabImage = new Image[game.nbImg];  //tableau d'image
+            initialize();                      //initialisation des images, cartes etc.
+        }
+        
+        //méthode ayant pour objectif de restart le programme
+        private void newGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            msgBox = MessageBoxButtons.YesNo;
+            result = MessageBox.Show("Are you sur to restart a game?", "Are you sur?", msgBox);
+            if (result == DialogResult.Yes)
+            {
+                initConstructor();
+            }
+
+        }
+        public void initialize()
+        {
+            try
+            {
+                //tableau avec les images disspo
+                tabImage[0] = Properties.Resources.chameau;
+                tabImage[1] = Properties.Resources.chien;
+                tabImage[2] = Properties.Resources.eye;
+                tabImage[3] = Properties.Resources.me;
+                tabImage[4] = Properties.Resources.singe;
+                tabImage[5] = Properties.Resources.tf2;
+                tabImage[6] = Properties.Resources.TrollFace;
+                tabImage[7] = Properties.Resources.vador;
+                this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+
+                if (nbCard36.Checked || nbCard64.Checked)
+                {
+                    tabImage[8] = Properties.Resources.android;
+                    tabImage[9] = Properties.Resources.bowser;
+                    tabImage[10] = Properties.Resources.champi;
+                    tabImage[11] = Properties.Resources.chrome;
+                    tabImage[12] = Properties.Resources.JustDoIt;
+                    tabImage[13] = Properties.Resources.Lanister;
+                    tabImage[14] = Properties.Resources.sparta;
+                    tabImage[15] = Properties.Resources.tfk;
+                    tabImage[16] = Properties.Resources.assainscreed_logo;
+                    tabImage[17] = Properties.Resources.image;
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+
+                }
+                if (nbCard64.Checked)
+                {
+                    tabImage[18] = Properties.Resources.ark;
+                    tabImage[19] = Properties.Resources.warframe;
+                    tabImage[20] = Properties.Resources.clash;
+                    tabImage[21] = Properties.Resources.hillsong;
+                    tabImage[22] = Properties.Resources.EvolveLogo;
+                    tabImage[23] = Properties.Resources.framboise;
+                    tabImage[24] = Properties.Resources.warframe;
+                    tabImage[25] = Properties.Resources.capKing;
+                    tabImage[26] = Properties.Resources.kebab;
+                    tabImage[27] = Properties.Resources.Windows;
+                    tabImage[28] = Properties.Resources.McDonalds;
+                    tabImage[29] = Properties.Resources.batman;
+                    tabImage[30] = Properties.Resources.DC;
+                    tabImage[31] = Properties.Resources.Informatique;
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    this.tMemory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                }
+                    //tableau servant à vérifier les place libre du tab tMemory
+                    bool[,] tabIsNotFree = new bool[game.tailleTab, game.tailleTab];
+
+
+                for (int i = 0; i < tabImage.Length; i++)
+                {
+                    do
+                    {
+                        positionRanX = random.Next(0, game.tailleTab);
+                        positionRanY = random.Next(0, game.tailleTab);
+                    }
+                    while (tabIsNotFree[positionRanX, positionRanY]); //tourne temps que la position du tableau est pas libre
+                                                                      //cette partie permet de gérer le fait que on ne place pas plus
+                                                                      //de pas générer plusieurs fois le même nombre aléatoire,
+                                                                      //et ainsi de ne pas mettre 2 cartes au même endroit
+
+                    //on crée une première carte que nous allons placer dans le tableau 2D
+                    //le premier argument this permet de donner l'objet actuelle à la classe card afin qu'elle puisse appelé une methode
+                    //appartenant à PrimaryMemory
+                    card = new Card(game, tabImage[i], i, positionRanX, positionRanY);
+                    this.tMemory.Controls.Add(this.card, this.card.posX, this.card.posY); //ajout de la carte dans le table layout panel
+                    card.flipBack();
+                    tabIsNotFree[this.card.posX, this.card.posY] = true;
+
+                    do
+                    {
+                        positionRanX = random.Next(0, game.tailleTab);
+                        positionRanY = random.Next(0, game.tailleTab);
+                    }
+                    while (tabIsNotFree[positionRanX, positionRanY]); //tourne temps que la position du tableau est pas libre
+                                                                      //cette partie permet de gérer le fait que on ne place pas plus
+                                                                      //de pas générer plusieurs fois le même nombre aléatoire,
+                                                                      //et ainsi de ne pas mettre 2 cartes au même endroit
+
+                    //on crée une première carte que nous allons placer dans le tableau 2D
+                    card2 = new Card(game, tabImage[i], i, positionRanX, positionRanY);
+                    this.tMemory.Controls.Add(this.card2, this.card2.posX, this.card2.posY);
+                    card2.flipBack();
+                    tabIsNotFree[this.card2.posX, this.card2.posY] = true;
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                throw (e);
+            }
+        }
+        //définition des propriétés du tableau 2D memory
+        public void initTabMemory()
+        {
+            if (nbCard16.Checked) { 
+                difTxtBox.Text = "Facile";
+                this.tMemory.Size = new System.Drawing.Size(550, 550);
+                this.ClientSize = new System.Drawing.Size(600, 700);
+            }
+            if (nbCard36.Checked) { 
+                 difTxtBox.Text = "Moyenne";
+                this.tMemory.Size = new System.Drawing.Size(650, 650);
+                this.ClientSize = new System.Drawing.Size(700, 800);
+            }
+            if (nbCard64.Checked) { 
+                difTxtBox.Text = "Difficile";
+                this.tMemory.Size = new System.Drawing.Size(850, 850);
+                this.ClientSize = new System.Drawing.Size(900, 1000);
+            }
+            this.tMemory.RowCount = game.tailleTab;
+            
+            this.tMemory.ColumnCount = game.tailleTab;
+        }
+
+        private void generalInformationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            msgBox = MessageBoxButtons.OK;
+            result = MessageBox.Show("Application developped by Gionatan Bizgan\nVersion 3.0\n 31.03.2016", "Help", msgBox);
+        }
+
+        private void restart_Click(object sender, EventArgs e)
+        {
+            initConstructor();
+            restart.Text = "Recommencer";
+            this.restart.UseVisualStyleBackColor = true;
+            ptsJr1.Text = 0.ToString();
+            ptsJr2.Text = 0.ToString();
+        }
+
+        public void updatePtsJoueurs()
+        {
+            ptsJr1.Text = game.joueur1.points.ToString();
+            if (isMutliplePlayer)
+                ptsJr2.Text = game.joueur2.points.ToString();
+        }
+
+        public void onePlayer()
+        {
+            jr2.Visible = false;
+            ptsJr2.Visible = false;
+            string nom = Prompt.ShowDialog("Entrez votre", "Entrez votre nom");
+            if (nom == "")
+                nom = "Joueur 1";
+            game.joueur1 = new Joueur(nom);
+            jr1.Text = nom;
+        }
+
+        public void twoPlayer()
+        {
+            string nom = Prompt.ShowDialog("Entrez le nom du premier joueur", "Entrez le premier nom");
+            if (nom == "")
+                nom = "Joueur 1";
+            game.joueur1 = new Joueur(nom);
+            jr1.Text = nom;
+            nom = Prompt.ShowDialog("Entrez le nom du 2ème jouer", "Entrez le 2ème nom");
+            if (nom == "")
+                nom = "Joueur 2";
+            game.joueur2 = new Joueur(nom);
+            jr2.Text = nom;
+            isMutliplePlayer = true;
+        }
+
+        private void PrimaryMemory_Load(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
