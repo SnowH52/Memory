@@ -1,0 +1,31 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Memory2_2
+{
+    class Joueur
+    {
+        private String nomJoueur;
+        public int points;
+        public bool isActive;
+
+        public Joueur(String nomJoueur)
+        {
+            this.nomJoueur = nomJoueur;
+            points = 0;
+            isActive = false;
+        }
+
+        public void changeActiveStatus()
+        {
+            isActive = !isActive;
+        }
+        public void addPoint()
+        {
+            points++;
+        }
+    }
+}
