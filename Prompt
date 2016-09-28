@@ -1,0 +1,112 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Memory2_2
+{
+    class Prompt// : PrimaryMemory
+    {
+        public Button button1;
+        public Button button2;
+        private Form prompt;
+        public CheckBox askHowManyPlayer;
+        PrimaryMemory primary;
+        MessageBoxButtons msgBox;
+        DialogResult result;
+        System.EventHandler eventClicChkbox;
+
+        public Prompt(PrimaryMemory primary)
+        {
+            askHowManyPlayer = new CheckBox();
+            this.askHowManyPlayer.AutoSize = true;
+            this.askHowManyPlayer.Location = new System.Drawing.Point(50, 80);
+            this.askHowManyPlayer.Name = "askHowManyPlayer";
+            this.askHowManyPlayer.Size = new System.Drawing.Size(80, 17);
+            this.askHowManyPlayer.TabIndex = 24;
+            this.askHowManyPlayer.Text = "Toujours poser la question";
+            this.askHowManyPlayer.UseVisualStyleBackColor = true;
+            this.askHowManyPlayer.Checked = true;
+            this.primary = primary;
+            eventClicChkbox += new System.EventHandler(confirm);
+
+        }
+
+        public static string ShowDialog(string text, string caption)
+        {
+            Form prompt = new Form()
+            {
+                Width = 400,
+                Height = 175,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                Text = caption,
+                StartPosition = FormStartPosition.CenterScreen
+            };
+            Label textLabel = new Label() { Left = 50, Top = 20, Text = text };
+            textLabel.Width = 200;
+            TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 280 };
+            Button confirmation = new Button() { Text = "Ok", Left = 230, Width = 100, Top = 80, DialogResult = DialogResult.OK };
+            confirmation.Click += (sender, e) => { prompt.Close(); };
+            prompt.Controls.Add(textBox);
+            prompt.Controls.Add(confirmation);
+            prompt.Controls.Add(textLabel);
+            prompt.AcceptButton = confirmation;
+
+            return prompt.ShowDialog() == DialogResult.OK ? textBox.Text : "";
+        }
+
+        public string chooseHowManyPlayer(string message, string buttonText1, string buttonText2)
+        {
+            prompt = new Form()
+            {
+                Width = 400,
+                Height = 175,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                Text = message,
+                StartPosition = FormStartPosition.CenterScreen
+
+            };
+            
+            Label lblMessage = new Label() { Left = 50, Top = 20, Text = message };
+            lblMessage.Width = 200;
+            button1 = new Button() { Text = buttonText1, Left = 50, Width = 100, Top = 50, DialogResult = DialogResult.OK };
+            button2 = new Button() { Text = buttonText2, Left = 160, Width = 100, Top = 50, DialogResult = DialogResult.OK };
+            button1.Click += new System.EventHandler(selectOnePlayer); 
+            button2.Click += new System.EventHandler(selectTwoPlayer);
+            askHowManyPlayer.Click += eventClicChkbox;
+            prompt.Controls.Add(lblMessage);
+            prompt.Controls.Add(button1);
+            prompt.Controls.Add(button2);
+            prompt.Controls.Add(askHowManyPlayer);
+
+            return prompt.ShowDialog() == DialogResult.OK ? lblMessage.Text : "";
+        }
+        private void selectOnePlayer(object sender, EventArgs e)
+        {
+            primary.onePlayer();
+            prompt.Close();
+        }
+        private void selectTwoPlayer(object sender, EventArgs e)
+        {
+            primary.twoPlayer();
+            prompt.Close();
+        }
+        private void confirm(object sender, EventArgs e)
+        {
+            if (!askHowManyPlayer.Checked)
+            { 
+                
+            msgBox = MessageBoxButtons.OKCancel;
+            
+                result = MessageBox.Show("Après avoir désactiver il faudra rédemarrer le jeu pour la réactiver, voulez-vous continuer?", "Confirmation", msgBox);
+                if (result == DialogResult.OK)
+                    askHowManyPlayer.Checked = false;
+                else
+                    askHowManyPlayer.Checked = true;
+            }
+
+        }
+    }
+}
