@@ -1,0 +1,205 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Windows.Forms;
+
+namespace Memory2_2
+{
+    class Game
+    {
+        private int compteur;
+        private Card secondaryCard;
+        private Card secondaryCard2;
+        private System.Windows.Forms.Timer aTimer;
+        public bool canFlip;
+        public int tailleTab;   //nombre de ligne et de colonne du tableau contenant les cartes
+        public int nbImg;                 //nombres d'images dissponible
+        private PrimaryMemory primary;
+        private MessageBoxButtons msgBox;
+        private DialogResult result;
+        private int cptCarteRetourne;
+        public Joueur joueur1;
+        public Joueur joueur2;
+
+        public Game(PrimaryMemory primary)
+        {
+            this.primary = primary;
+            joueur1 = null;
+            joueur2 = null;
+            defineTailleTab();
+            nbImg = tailleTab * tailleTab / 2;
+            compteur = 0;
+            secondaryCard = new Card();
+            secondaryCard2 = new Card();
+            canFlip = true;
+        }
+
+        public void checkFlipedCard(Card card)
+        {
+            try
+            {
+                compteur++;
+                
+                secondaryCard = card;
+                compareCard();
+            }
+            catch
+            {
+                throw;
+            }
+            
+        }
+        public void compareCard()
+        {
+            try
+            {
+                if (compteur == 1)
+                {
+                    
+                    secondaryCard2 = secondaryCard;
+                    secondaryCard2.canBeFliped = false;
+                }
+                else
+                {
+                    secondaryCard2.canBeFliped = true;
+                    if (primary.isMutliplePlayer) {
+                        joueur2.changeActiveStatus();
+                        joueur1.changeActiveStatus();
+                    }
+                    else
+                    {
+                        joueur1.isActive = true;
+                    }
+                    
+                    this.canFlip = false;
+                    compteur = 0;
+
+                    if (secondaryCard2.front == secondaryCard.front)
+                    {
+                        if (joueur1.isActive)
+                        {
+                            joueur1.addPoint();
+                        }
+                        else
+                        {
+                            joueur2.addPoint();
+                        }
+                        primary.updatePtsJoueurs();
+                        timer(true);
+                        msgBox = MessageBoxButtons.OK;
+                        result = MessageBox.Show("Bravo tu as trouvé une paire !", "Bravo !", msgBox);
+
+                        cptCarteRetourne++;
+                        if (cptCarteRetourne == nbImg)
+                        {
+                            msgBox = MessageBoxButtons.YesNo;
+                            result = MessageBox.Show("Bravo ! Vous avez terminé une partie ! Voulez-vous recommencer?", "Recommcner", msgBox);
+                            if(result == DialogResult.Yes)
+                            {
+                                primary.initConstructor();
+                                cptCarteRetourne = 0;
+                            }
+                            else
+                            {
+                                System.Windows.Forms.Application.Exit();
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        timer(false);
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            
+            
+        }
+        
+        public void timer(bool areTheSame)
+        {
+            try
+            {
+                aTimer = new System.Windows.Forms.Timer();
+                aTimer.Interval = 1000;
+                aTimer.Start();
+                if (areTheSame)
+                    aTimer.Tick += new EventHandler(endTimer2);
+                if (!areTheSame)
+                    aTimer.Tick += new EventHandler(endTimer);                                
+            }
+            catch
+            {
+                throw;
+            }
+            
+
+        }
+        private void endTimer(object source, EventArgs e)
+        {
+            try
+            {
+                secondaryCard.flipBack();
+                secondaryCard2.flipBack();
+                this.canFlip = true;
+                aTimer.Stop();
+            }
+            catch
+            {
+                throw;
+            }
+            
+
+        }
+        private void endTimer2(object source, EventArgs e)
+        {
+            try
+            {
+
+                primary.tMemory.Controls.Remove(this.secondaryCard);
+                primary.tMemory.Controls.Remove(this.secondaryCard2);
+                aTimer.Stop();
+                this.canFlip = true;
+            }
+            catch(System.Exception er)
+            {
+                throw (er);
+            }
+            
+        }
+
+        public void defineTailleTab()
+        {
+            try
+            {
+                if (primary.nbCard16.Checked)
+                {
+                    tailleTab = 4;
+                }
+                if (primary.nbCard36.Checked)
+                {
+                    tailleTab = 6;
+                }
+                if (primary.nbCard64.Checked)
+                {
+                    tailleTab = 8;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            
+        }
+    }
+}
